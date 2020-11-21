@@ -24,8 +24,9 @@
     cursor: pointer;
 }
 
-.sidebar-channels-add:hover {
+.sidebar-channel-add:hover {
     color: white;
+    cursor: pointer;
 }
 
 .sidebar-channels-header {

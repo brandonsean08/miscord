@@ -10,8 +10,11 @@ import { useSelector } from "react-redux";
 import { selectChannelName, selectChannelId } from "../../features/appSlice";
 import { selectUser } from "../../features/userSlice";
 import database from "../../database_context/firebase";
-import firebase from 'firebase';
+import firebase from "firebase";
 
+/**
+ * Functional component used to display various data about the chat component
+ */
 function Chat() {
   const user = useSelector(selectUser);
   const channelId = useSelector(selectChannelId);
@@ -19,9 +22,12 @@ function Chat() {
   const [chatMessageInput, setChatMessageInput] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
 
+  /**
+   * Loading the channel to be displayed along with all of the messages related to that channel
+   */
   useEffect(() => {
-      if(channelId) {
-        database
+    if (channelId) {
+      database
         .collection("channels")
         .doc(channelId)
         .collection("messages")
@@ -29,40 +35,57 @@ function Chat() {
         .onSnapshot((snapshot) =>
           setChatMessages(snapshot.docs.map((doc) => doc.data()))
         );
-      }
+    }
   }, [channelId]);
 
-  const sendChatMessage = e => {
-      e.preventDefault();
+  /**
+   * Storing the chat message in the database when the user clicks enter
+   * @param {The event object} e 
+   */
+  const sendChatMessage = (e) => {
+    e.preventDefault();
 
-      if(chatMessageInput) {
-          database.collection('channels').doc(channelId).collection('messages').add({
-              message: chatMessageInput,
-              user: user,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          })
-      }
+    if (chatMessageInput) {
+      database
+        .collection("channels")
+        .doc(channelId)
+        .collection("messages")
+        .add({
+          message: chatMessageInput,
+          user: user,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+    }
 
-      setChatMessageInput("");
-  }
+    //Setting the chat message inout to nothing after the user has entered a message.
+    setChatMessageInput("");
+  };
 
   return (
     <div className="chat">
       <ChatHeader channelName={channelName} />
       <div className="chat-messages">
         {chatMessages.map((message) => (
-          <ChatMessage user={message.user} timestamp={message.timestamp} message ={message.message}/>
+          <ChatMessage
+            user={message.user}
+            timestamp={message.timestamp}
+            message={message.message}
+          />
         ))}
       </div>
       <div className="chat-input">
         <AddCircleIcon />
         <form>
           <input
-            placeholder={"Message for test Channel"}
+            placeholder={"Message..."}
             value={chatMessageInput}
             onChange={(e) => setChatMessageInput(e.target.value)}
           />
-          <button type="submit" className="chat-input-send-btn" onClick={sendChatMessage}>
+          <button
+            type="submit"
+            className="chat-input-send-btn"
+            onClick={sendChatMessage}
+          >
             Send Message
           </button>
         </form>

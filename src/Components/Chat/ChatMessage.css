@@ -1,8 +1,13 @@
 .chat-message {
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
     color: white;
+    font-weight: 300;
+}
+
+.chat-message:hover {
+    background-color: #2f3135;
 }
 
 .chat-message-info {
@@ -12,5 +17,5 @@
 .chat-message-timestamp {
     color: gray;
     margin-left: 20px;
-    font-size: "x-small";
+    font-size:x-small;
 }
